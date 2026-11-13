@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ADO Mapper · Local work item export</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/vendor/exceljs.js"></script>
+  <script defer src="/vendor/jszip.js"></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-icon">A</span> ADO Mapper <span class="brand-tag">LOCAL</span></a>
+    <span class="privacy"><span class="dot"></span> Your files never leave this browser</span>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">SPREADSHEET IN. WORK ITEMS OUT.</p><h1>Make your backlog<br><span>import-ready.</span></h1><p class="subtitle">Map your columns once. Preview, validate, and export<br class="desktop"> clean CSV files for Azure DevOps. No macros. No uploads.</p></div>
+      <div class="flow" aria-label="Import workflow"><div><span>01</span> Source file</div><i>→</i><div><span>02</span> Your mapping</div><i>→</i><div><span>03</span> ADO-ready CSV</div></div>
+    </section>
+    <div id="notice" class="notice hidden" role="alert"></div>
+    <div class="workspace">
+      <section class="card source-card">
+        <div class="section-title"><span class="step">1</span><div><h2>Choose your source</h2><p>Excel or CSV. Everything stays local.</p></div></div>
+        <label class="dropzone" id="dropzone" for="source-file"><span class="upload-icon" aria-hidden="true">↥</span><strong id="file-label">Drop a spreadsheet here</strong><span>or click to browse · .xlsx / .csv</span><input id="source-file" type="file" accept=".xlsx,.csv"></label>
+        <div class="source-controls">
+          <label>Worksheet<select id="sheet" disabled><option>Load a file first</option></select></label>
+          <label>Header row<input id="header-row" type="number" min="1" step="1" value="1" disabled></label>
+          <label id="delimiter-label" class="hidden">CSV delimiter<select id="delimiter"><option value="auto">Auto-detect</option><option value=",">Comma</option><option value=";">Semicolon</option><option value="tab">Tab</option></select></label>
+        </div>
+        <div class="source-stats"><div><strong id="source-rows">—</strong><span>source rows</span></div><div><strong id="source-cols">—</strong><span>columns</span></div></div>
+        <p class="helper">Your header names must be unique. Excel formulas use their last saved results: recalculate and save in Excel before loading.</p>
+        <details><summary>What happens to Epics and Features?</summary><p>Enable Link to existing Epics below, select your Epic-name column, and use the editable name-to-ID lookup table. It is preloaded with your 21 Epics; the app does not query ADO. Direct Epic → User Story links skip the usual Feature level.</p></details>
+      </section>
+      <section class="card mapping-card">
+        <div class="section-title"><span class="step">2</span><div><h2>Map to Azure DevOps</h2><p>Your columns, your field names, your defaults.</p></div><div class="title-actions"><button id="load-profile">Load profile</button><button id="save-profile" disabled>Save profile</button><input id="profile-file" type="file" accept=".json" hidden></div></div>
+        <div class="mapping-help"><span class="pill">STANDARD FIELDS</span><span>Choose exact standard names from the dropdown. Select <strong>Custom field…</strong> only for a project-specific name. Field availability depends on your process.</span></div>
+        <div class="table-wrap"><table class="mapping-table"><thead><tr><th>Use</th><th>ADO field</th><th>Source column</th><th>Default / constant</th><th>Prefix</th><th>Suffix</th><th>Text format</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="mappings"></tbody></table><div id="mapping-empty" class="empty">Load a source file to get started.<span>We’ll suggest a mapping based on your headers.</span></div></div>
+        <div class="mapping-footer"><button id="add-mapping" disabled>＋ Add field mapping</button><span>Use ↑ ↓ to change CSV column order.</span></div>
+        <p class="helper">A blank source value uses the default. Prefix and suffix wrap nonblank values only. For Iteration Path, use an existing full path such as <code>YourProject\Sprint 1</code>.</p>
+        <details class="format-help"><summary>Rich text: line breaks, user stories & Markdown</summary><p><strong>Paragraphs</strong> converts blank lines to paragraphs and single line breaks to &lt;br&gt;. <strong>User story</strong> structures “As a … I want to … so that …” into three bold-labeled paragraphs. <strong>Markdown</strong> supports # headings, **bold**, *italic*, `code`, - bullets and numbered lists. For other text it preserves paragraph breaks. HTML input is escaped, not executed. Use these modes for ADO HTML fields such as Description and Acceptance Criteria; Excel cell styling is not copied.</p></details>
+      </section>
+    </div>
+    <section class="card parent-card">
+      <div class="section-title"><span class="step">↳</span><div><h2>Link stories by Epic name</h2><p>Match the Epic text in your spreadsheet to an existing ADO Epic ID.</p></div><label class="toggle-label"><input id="parent-enabled" type="checkbox"> Link to existing Epics</label></div>
+      <div id="parent-settings" class="hidden">
+        <label class="parent-mode-label">How does your sheet identify the Epic?<select id="parent-mode"><option value="lookup">Epic names in my sheet → look up ADO IDs below</option><option value="direct">Advanced: my sheet already contains ADO IDs / use one fixed ID</option></select></label>
+        <div id="epic-lookup-settings">
+          <label class="epic-source-label">Column in your spreadsheet containing Epic names<select id="epic-source"><option value="">Choose your Epic column</option></select></label>
+          <p class="helper"><strong>Example:</strong> If your sheet says “Products”, enter Products in the first column, its existing ADO ID in the second, and its exact current ADO title in the third. No ID column is needed in your source.</p>
+          <p class="helper">Preloaded from your screenshot: 21 existing Epics. Edit the first column if your spreadsheet uses different names. Matching ignores case and outer spaces, but not spelling or punctuation.</p>
+          <div class="table-wrap epic-lookup-wrap"><table class="epic-lookup-table"><thead><tr><th>Epic name in your spreadsheet</th><th>Existing ADO Epic ID</th><th>Current Epic title in ADO</th><th>Source rows</th><th>Actions</th></tr></thead><tbody id="epic-lookups"></tbody></table></div>
+          <div class="mapping-footer"><button id="add-epic">＋ Add Epic mapping</button><span>Save profile keeps your full lookup table.</span></div>
+        </div>
+        <div id="epic-direct-settings" class="parent-controls hidden">
+          <label>Column containing actual ADO Epic IDs<select id="parent-id-source"><option value="">Use the fixed ID below</option></select></label>
+          <label>Fixed ADO Epic ID (or fallback for blanks)<input id="parent-id-default" placeholder="e.g. 165"></label>
+          <label>Column containing current ADO Epic titles<select id="parent-title-source"><option value="">Use the fixed title below</option></select></label>
+          <label>Fixed ADO Epic title (or fallback for blanks)<input id="parent-title-default" placeholder="Exact current title in ADO"></label>
+        </div>
+        <p class="helper parent-warning"><strong>Important:</strong> Supply real Epic IDs and exact current titles. CSV uses ID, Title 1 and Title 2 with existing parent reference rows; it may update an Epic title if you provide a different title. Other parent fields are left blank. Review parent rows in ADO before saving. This offline app cannot verify IDs, types, titles or project membership. Stories are grouped by Epic; each batch repeats needed parent references and stays within 1,000 total rows.</p>
+      </div>
+    </section>
+    <section class="card export-card">
+      <div class="section-title"><span class="step">3</span><div><h2>Review & export</h2><p>Validate locally. Confirm project-specific fields in ADO.</p></div><span id="status" class="status idle">Waiting for source</span></div>
+      <div class="export-controls">
+        <label>Filter source column<select id="filter-column" disabled><option value="">All rows</option></select></label>
+        <label>Equals (case-insensitive)<input id="filter-value" list="filter-values" placeholder="Enter a value, or leave blank" disabled><datalist id="filter-values"></datalist></label>
+        <label>Export batch<select id="batch" disabled><option value="1">Batch 1</option></select></label>
+        <div class="download-actions"><button id="download" class="primary" disabled>Download CSV ↓</button><button id="download-all" disabled>All batches (.zip)</button></div>
+      </div>
+      <div id="validation" class="validation hidden" aria-live="polite"></div>
+      <label class="preview-toggle"><input id="preview-html" type="checkbox" checked> Render formatted HTML fields in preview <span>Uncheck to inspect the exact CSV HTML.</span></label>
+      <div class="preview-meta"><span id="preview-label">Your mapped output will appear here</span><span id="batch-label">Up to 1,000 items per CSV</span></div>
+      <div class="table-wrap preview-wrap"><table id="preview"><thead></thead><tbody></tbody></table><div id="preview-empty" class="empty">Nothing to preview yet.<span>Load a file and choose your mappings above.</span></div></div>
+      <div class="export-note"><strong>Next stop: Azure DevOps.</strong> Boards → Queries → Import work items → choose your CSV → review → Save items.<br>Importing a creation file again creates duplicates. State and Assigned To are excluded; IDs are used only for existing Epic reference rows.</div>
+    </section>
+    <footer><span>Built for your Mac. No account, no cloud, no tracking.</span><a href="https://learn.microsoft.com/en-us/azure/devops/boards/queries/import-work-items-from-csv?view=azure-devops" target="_blank" rel="noreferrer">ADO import guide ↗</a></footer>
+  </main>
+  <datalist id="ado-fields"></datalist>
+</body>
+</html>

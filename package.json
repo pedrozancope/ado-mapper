@@ -1,0 +1,16 @@
+{
+  "name": "ado-local-mapper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --watch src src/server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0",
+    "jszip": "3.10.1",
+    "nodemon": "^3.1.14"
+  }
+}
