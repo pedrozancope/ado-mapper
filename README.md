@@ -61,6 +61,11 @@ appropriate folder manually.
    only to empty source values; `0` and `FALSE` are preserved. Prefixes and
    suffixes wrap nonblank values. For example, prefix `YourProject\` turns
    `Sprint 1` into `YourProject\Sprint 1` for **Iteration Path**.
+   To use a fixed iteration root with an optional Sprint, select **Iteration
+   root + Sprint** as the text format for **Iteration Path**, put the root in
+   **Default / constant**, select the Sprint source column, and leave prefix and
+   suffix blank. Only the segment after the last `\` in the source is appended;
+   blank Sprint values use the root alone. A trailing `\` in the root is optional.
 4. Optionally filter a source column by an exact, case-insensitive value.
    Whitespace is significant. A blank filter value selects blank cells.
    Hidden rows and Excel's worksheet filters do not affect the imported data.

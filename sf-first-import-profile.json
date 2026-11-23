@@ -40,11 +40,11 @@
     {
       "enabled": true,
       "field": "Iteration Path",
-      "source": "",
-      "default": "eB2B Global Platform Mars Snacking\\01_Mars Snacking MVP Release\\Sprint 1",
+      "source": "Sprint",
+      "default": "eB2B Global Platform Mars Snacking\\01_Mars Snacking MVP Release",
       "prefix": "",
       "suffix": "",
-      "format": "plain"
+      "format": "iteration-root"
     },
     {
       "enabled": true,

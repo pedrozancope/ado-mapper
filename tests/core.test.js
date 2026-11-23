@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import ExcelJS from 'exceljs';
 import { fileURLToPath } from 'node:url';
 import {
@@ -55,6 +56,43 @@ test('defaults, paths, ordering, zero and false preservation', () => {
   assert.deepEqual(result.rows[0].values, ['User Story', 'One', 'Project\\Sprint 1', '0', '[FALSE]', 'Comma, "quote"\nand café']);
   assert.equal(result.rows[1].values[3], '9');
   assert.equal(result.rows[1].values[5], '');
+});
+
+test('iteration root appends only the final source segment and uses root for blank sprints', () => {
+  const source = tableFromRecords(parseCsv(
+    'Title,Sprint\nOne,Sprint 1\nTwo,Old Project\\Release\\Sprint 2\nThree,\nFour,  \nFive,0\nSix,Path\\'
+  ).records);
+  const iteration = { ...mapping('Iteration Path', 'Sprint', 'Project\\Release\\'), format: 'iteration-root' };
+  const result = buildExport(source, [...mappings(), iteration]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.rows.map(row => row.values[2]), [
+    'Project\\Release\\Sprint 1', 'Project\\Release\\Sprint 2',
+    'Project\\Release', 'Project\\Release', 'Project\\Release\\0', 'Project\\Release'
+  ]);
+  assert.equal(buildExport(source, [...mappings(), { ...iteration, source: '' }]).rows[0].values[2], 'Project\\Release');
+  for (const invalid of [
+    { ...iteration, default: '' },
+    { ...iteration, default: '\\' },
+    { ...iteration, prefix: 'Project\\' },
+    { ...iteration, suffix: 'x' },
+    { ...iteration, field: 'Area Path' }
+  ]) {
+    assert.notDeepEqual(buildExport(source, [...mappings(), invalid]).errors, []);
+  }
+});
+
+test('SF import profile maps Sprint to its configured iteration root', () => {
+  const profile = readProfile(JSON.parse(readFileSync(new URL('../sf-first-import-profile.json', import.meta.url), 'utf8')));
+  const iteration = profile.mappings.find(item => item.field === 'Iteration Path');
+  const source = tableFromRecords([
+    ['Title', 'Sprint'], ['One', 'Another\\Sprint 3'], ['Two', '']
+  ]);
+  const result = buildExport(source, [...mappings(), iteration]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.rows.map(row => row.values[2]), [
+    'eB2B Global Platform Mars Snacking\\01_Mars Snacking MVP Release\\Sprint 3',
+    'eB2B Global Platform Mars Snacking\\01_Mars Snacking MVP Release'
+  ]);
 });
 
 test('creation validation blocks forbidden, missing, duplicate and invalid fields', () => {

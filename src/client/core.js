@@ -9,6 +9,7 @@ export const FIELD_SUGGESTIONS = [
   'Target Date', 'Stack Rank', 'Backlog Priority'
 ];
 export const FORMATS = ['plain', 'paragraphs', 'story', 'markdown'];
+const MAPPING_FORMATS = [...FORMATS, 'iteration-root'];
 export const emptyParent = () => ({ enabled: false, idSource: '', idDefault: '', titleSource: '', titleDefault: '' });
 export const DEFAULT_EPICS = [
   ['1572169', 'Order History & Reordering'],
@@ -246,6 +247,11 @@ export function suggestedMappings(headers) {
 
 export function mappedValue(row, headers, mapping) {
   const value = mapping.source ? row.values[headers.indexOf(mapping.source)] : '';
+  if (mapping.format === 'iteration-root') {
+    const root = mapping.default.trim().replace(/\\+$/, '');
+    const sprint = value.trim().split('\\').pop().trim();
+    return sprint ? `${root}\\${sprint}` : root;
+  }
   const base = value === '' ? mapping.default : value;
   return formatText(base === '' ? '' : `${mapping.prefix}${base}${mapping.suffix}`, mapping.format || 'plain');
 }
@@ -265,7 +271,12 @@ export function buildExport(table, mappings, filter = { column: '', value: '' },
     if (seen.has(key)) errors.push(`${label}: duplicate ADO field "${field}".`);
     seen.add(key);
     if (forbidden.has(key)) errors.push(`${label}: "${field}" is not allowed in this new-item creation workflow.`);
-    if (!FORMATS.includes(mapping.format || 'plain')) errors.push(`${label}: select a valid text format.`);
+    if (!MAPPING_FORMATS.includes(mapping.format || 'plain')) errors.push(`${label}: select a valid text format.`);
+    if (mapping.format === 'iteration-root') {
+      if (field !== 'Iteration Path') errors.push(`${label}: Iteration root mode requires the "Iteration Path" field.`);
+      if (!mapping.default.trim().replace(/\\+$/, '')) errors.push(`${label}: enter an Iteration Path root in Default / constant.`);
+      if (mapping.prefix || mapping.suffix) errors.push(`${label}: remove the prefix and suffix when using Iteration root mode.`);
+    }
     if (field === 'Work Item Type' || field === 'Title') {
       if (mapping.format && mapping.format !== 'plain') errors.push(`${label}: "${field}" must use plain text.`);
     }
@@ -413,7 +424,7 @@ export function readProfile(raw) {
       ['field', 'source', 'default', 'prefix', 'suffix'].some(key => typeof mapping[key] !== 'string')) {
       throw new Error(`Invalid mapping ${index + 1} in profile.`);
     }
-    if (raw.version >= 2 && !FORMATS.includes(mapping.format)) throw new Error(`Invalid text format in mapping ${index + 1}.`);
+    if (raw.version >= 2 && !MAPPING_FORMATS.includes(mapping.format)) throw new Error(`Invalid text format in mapping ${index + 1}.`);
     return { enabled: mapping.enabled, ...Object.fromEntries(['field', 'source', 'default', 'prefix', 'suffix'].map(key => [key, mapping[key]])),
       ...(raw.version >= 2 ? { format: mapping.format } : {}) };
   });
