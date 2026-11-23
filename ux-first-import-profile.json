@@ -1,0 +1,212 @@
+{
+  "version": 3,
+  "mappings": [
+    {
+      "enabled": true,
+      "field": "Work Item Type",
+      "source": "",
+      "default": "User Story",
+      "prefix": "",
+      "suffix": "",
+      "format": "plain"
+    },
+    {
+      "enabled": true,
+      "field": "Title",
+      "source": "Work Summary (Title)",
+      "default": "",
+      "prefix": "",
+      "suffix": "",
+      "format": "plain"
+    },
+    {
+      "enabled": true,
+      "field": "Description",
+      "source": "User Story (Description)",
+      "default": "",
+      "prefix": "",
+      "suffix": "",
+      "format": "story"
+    },
+    {
+      "enabled": true,
+      "field": "Acceptance Criteria",
+      "source": "Acceptance Criteria",
+      "default": "",
+      "prefix": "",
+      "suffix": "",
+      "format": "markdown"
+    },
+    {
+      "enabled": true,
+      "field": "Iteration Path",
+      "source": "Sprint",
+      "default": "eB2B Global Snacking\\01_US Web MVP\\",
+      "prefix": "",
+      "suffix": "",
+      "format": "iteration-root"
+    },
+    {
+      "enabled": true,
+      "field": "Dependencies",
+      "source": "Design Notes / Dependencies",
+      "default": "",
+      "prefix": "",
+      "suffix": "",
+      "format": "paragraphs"
+    },
+    {
+      "enabled": true,
+      "field": "Story Points",
+      "source": "Effort Required",
+      "default": "",
+      "prefix": "",
+      "suffix": "",
+      "format": "plain"
+    },
+    {
+      "enabled": true,
+      "field": "GBL_CategoryFeature",
+      "source": "",
+      "default": "Frontend & BFF",
+      "prefix": "",
+      "suffix": "",
+      "format": "plain"
+    }
+  ],
+  "filter": {
+    "column": "",
+    "value": ""
+  },
+  "parent": {
+    "enabled": true,
+    "idSource": "",
+    "idDefault": "",
+    "titleSource": "",
+    "titleDefault": "",
+    "mode": "lookup",
+    "epicSource": "Epic",
+    "epics": [
+      {
+        "sourceName": "Order History & Reordering",
+        "id": "1572169",
+        "title": "Order History & Reordering"
+      },
+      {
+        "sourceName": "Login & User Session",
+        "id": "1572170",
+        "title": "Login & User Session"
+      },
+      {
+        "sourceName": "Pricing, Promotions & Entitlements",
+        "id": "1572171",
+        "title": "Pricing, Promotions & Entitlements"
+      },
+      {
+        "sourceName": "My Account",
+        "id": "1572172",
+        "title": "My Account"
+      },
+      {
+        "sourceName": "Product Discovery",
+        "id": "1572173",
+        "title": "Product Discovery"
+      },
+      {
+        "sourceName": "Guest Experience",
+        "id": "1572174",
+        "title": "Guest Experience"
+      },
+      {
+        "sourceName": "Home Page",
+        "id": "1572175",
+        "title": "Home Page"
+      },
+      {
+        "sourceName": "Global Navigation & Styling",
+        "id": "1572176",
+        "title": "Global Navigation & Styling"
+      },
+      {
+        "sourceName": "Registration",
+        "id": "1572177",
+        "title": "Registration"
+      },
+      {
+        "sourceName": "Quick Order",
+        "id": "1620336",
+        "title": "Quick Order"
+      },
+      {
+        "sourceName": "Cart & Related Validations",
+        "id": "1620342",
+        "title": "Cart & Related Validations"
+      },
+      {
+        "sourceName": "Checkout & Related Validations",
+        "id": "1620343",
+        "title": "Checkout & Related Validations"
+      },
+      {
+        "sourceName": "Lists",
+        "id": "1620344",
+        "title": "Lists"
+      },
+      {
+        "sourceName": "Self Service & Content",
+        "id": "1620345",
+        "title": "Self- Service & Content"
+      },
+      {
+        "sourceName": "Inventory Availability",
+        "id": "1620346",
+        "title": "Inventory Availability"
+      },
+      {
+        "sourceName": "Order Management",
+        "id": "1620347",
+        "title": "Order Management"
+      },
+      {
+        "sourceName": "Order Fulfillment",
+        "id": "1620348",
+        "title": "Order Fulfillment"
+      },
+      {
+        "sourceName": "Invoicing & Returns",
+        "id": "1620349",
+        "title": "Invoicing & Returns"
+      },
+      {
+        "sourceName": "Notifications & Exceptions",
+        "id": "1620350",
+        "title": "Notifications & Exceptions"
+      },
+      {
+        "sourceName": "Account Management",
+        "id": "1620351",
+        "title": "Account Management"
+      },
+      {
+        "sourceName": "Merchandising",
+        "id": "1620352",
+        "title": "Merchandising"
+      },
+      {
+        "sourceName": "Setup & Administration",
+        "id": "1624168",
+        "title": "Setup & Administration"
+      },
+      {
+        "sourceName": "Security & User Management",
+        "id": "1624169",
+        "title": "Security & User Management"
+      },
+      {
+        "sourceName": "Product Master Data",
+        "id": "1636672",
+        "title": "Product Master Data"
+      }
+    ]
+  }
+}
